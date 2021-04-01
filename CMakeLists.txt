@@ -20,14 +20,69 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(turtlesim REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(rclcpp_components REQUIRED)
+
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/Harmonic.srv"
+ )
 
 add_executable(controller src/exercise1.cpp)
 ament_target_dependencies(controller
   rclcpp turtlesim geometry_msgs)
   
+rosidl_target_interfaces(controller
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+  
+add_executable(harmonic src/server.cpp)
+ament_target_dependencies(harmonic
+  rclcpp)
+  
+rosidl_target_interfaces(harmonic
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+  
+add_library(harmonic_component SHARED
+  src/server_comp.cpp)
+  
+rclcpp_components_register_node(harmonic_component
+  PLUGIN "turtlesim_controller::HarmonicServer"
+  EXECUTABLE comp_harmonic)
+  
+ament_target_dependencies(harmonic_component rclcpp rclcpp_components)
+
+rosidl_target_interfaces(harmonic_component
+  ${PROJECT_NAME} "rosidl_typesupport_cpp") 
+  
+add_library(controller_component SHARED
+  src/exercise1_comp.cpp)
+  
+rclcpp_components_register_node(controller_component
+  PLUGIN "turtlesim_controller::MyController"
+  EXECUTABLE comp_controller)
+  
+ament_target_dependencies(controller_component rclcpp rclcpp_components turtlesim geometry_msgs)
+
+rosidl_target_interfaces(controller_component
+  ${PROJECT_NAME} "rosidl_typesupport_cpp") 
+  
+  
 install(TARGETS
   controller
-  DESTINATION lib/${PROJECT_NAME})
+  harmonic
+  harmonic_component
+  controller_component
+  comp_harmonic
+  comp_controller
+  DESTINATION lib/${PROJECT_NAME}
+  LIBRARY DESTINATION lib)
+  
+install(
+  DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
+
 
 
 if(BUILD_TESTING)

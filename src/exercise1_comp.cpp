@@ -16,9 +16,10 @@
 #include <chrono>
 #include <cinttypes>
 
-//add the ROS header
+
 #include "rclcpp/rclcpp.hpp"
-//add the headers for 
+#include "rclcpp_components/register_node_macro.hpp"
+
 #include "turtlesim/msg/pose.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "turtlesim/srv/kill.hpp"
@@ -27,11 +28,13 @@
 
 using std::placeholders::_1;
 
+namespace turtlesim_controller{
+
 class MyController : public rclcpp::Node
 {
 public:
-  MyController()
-  : Node("my_controller")
+  MyController(const rclcpp::NodeOptions & options)
+  : Node("my_controller", options)
   { 
     //initialize the publisher, the subscriber, client1, client2
     publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/my_turtle/cmd_vel", 1);
@@ -65,7 +68,12 @@ public:
     RCLCPP_INFO(this->get_logger(), "waiting for service to appear...");
     }
     
+    this->call_client1();
+    this->call_client2();
+    
   }
+  
+private:
 
   void call_client1(){
   auto request = std::make_shared<turtlesim::srv::Kill::Request>();
@@ -81,8 +89,6 @@ public:
   request->theta=0.0;
   auto result_future = client2_->async_send_request(request);
   }
-
-private:
 
   void topic_callback(const turtlesim::msg::Pose::SharedPtr msg)
   {
@@ -123,13 +129,7 @@ private:
   rclcpp::Client<turtlesim_controller::srv::Harmonic>::SharedPtr client3_;
 };
 
-int main(int argc, char * argv[])
-{
-  rclcpp::init(argc, argv);
-  auto node = std::make_shared<MyController>();
-  node->call_client1();
-  node->call_client2();
-  rclcpp::spin(node);
-  rclcpp::shutdown();
-  return 0;
 }
+
+RCLCPP_COMPONENTS_REGISTER_NODE(turtlesim_controller::MyController) 
+
