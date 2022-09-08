@@ -5,6 +5,7 @@
 #include "turtlesim/Kill.h"
 #include "turtlesim/TeleportAbsolute.h"
 #include "turtlesim_controller/Vel.h"
+#include "turtlesim_controller/Harmonic.h"
 
 float pos_x;
 float pos_y;
@@ -34,7 +35,7 @@ int main (int argc, char **argv)
 	
 	ros::ServiceClient client1 = nh.serviceClient<turtlesim::Spawn>("/spawn");
 	turtlesim::Spawn srv1;
-	srv1.request.x = 1.5;
+	srv1.request.x = 2.0;
 	srv1.request.y = 1.0;
  	srv1.request.theta = 0.0;
  	srv1.request.name = "rt1_turtle";
@@ -47,21 +48,27 @@ int main (int argc, char **argv)
 	
 	ros::Publisher pub2 = nh.advertise<turtlesim_controller::Vel>("rt1_turtle/my_vel", 1);
 	
+	ros::ServiceClient client3 = nh.serviceClient<turtlesim_controller::Harmonic>("/harmonic");
+	
 	ros::Rate loop_rate(1000);
 	while (ros::ok()){
 	
 	geometry_msgs::Twist my_vel;
 	
+	turtlesim_controller::Harmonic harm_vel;
+	harm_vel.request.x = pos_x;
+	client3.call(harm_vel);
+	
 	if (pos_x > 9.0){
 	my_vel.linear.x = 1.0;
 	my_vel.angular.z = 1.0;
 	}
-	else if (pos_x < 1.5){
+	else if (pos_x < 2.0){
 	my_vel.linear.x = 1.0;
 	my_vel.angular.z = -1.0;
 	}
 	else{
-	my_vel.linear.x = 1.0;
+	my_vel.linear.x = harm_vel.response.vel;
 	my_vel.angular.z = 0.0;
 	}
 	if(pos_y > 9.0)

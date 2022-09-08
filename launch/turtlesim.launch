@@ -1,0 +1,6 @@
+<launch>
+	<node name="simulation" pkg="turtlesim" type="turtlesim_node" />
+	<node name="server" pkg="turtlesim_controller" type="harmonic_server" />
+	<node name="controller" pkg="turtlesim_controller" type="turtlesim_controller" output="screen" />
+</launch>
+

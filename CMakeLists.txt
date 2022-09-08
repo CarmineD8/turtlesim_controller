@@ -58,6 +58,7 @@ find_package(catkin REQUIRED COMPONENTS
  add_service_files(
    FILES
    Velocity.srv
+   Harmonic.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -136,6 +137,7 @@ include_directories(
 add_executable(turtlesim_controller src/turtlesim_subcriber.cpp)
 add_executable(velocity_server src/velocity_server.cpp)
 add_executable(turtlesim_random src/turtlesim_random.cpp)
+add_executable(harmonic_server src/harmonic_server.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -148,6 +150,7 @@ add_executable(turtlesim_random src/turtlesim_random.cpp)
  add_dependencies(turtlesim_controller ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
  add_dependencies(velocity_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
  add_dependencies(turtlesim_random ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ add_dependencies(harmonic_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 ## Specify libraries to link a library or executable target against
  target_link_libraries(turtlesim_controller
    ${catkin_LIBRARIES}
@@ -160,6 +163,11 @@ add_executable(turtlesim_random src/turtlesim_random.cpp)
  target_link_libraries(turtlesim_random
    ${catkin_LIBRARIES}
  )
+ 
+  target_link_libraries(harmonic_server
+   ${catkin_LIBRARIES}
+ )
+
 
 
 
