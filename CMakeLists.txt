@@ -13,22 +13,26 @@ find_package(geometry_msgs REQUIRED)
 find_package(turtlesim_custom_msgs REQUIRED)
 
 add_executable(turtlesim_controller src/turtlesim_controller.cpp)
-#add_executable(turtlesim_controller2 src/turtlesim_controller2.cpp)
-#add_executable(turtlesim_controller3 src/turtlesim_controller3.cpp)
-#add_executable(turtlesim_service src/turtlesim_service.cpp)
+add_executable(turtlesim_controller2 src/turtlesim_controller2.cpp)
+add_executable(turtlesim_controller3 src/turtlesim_controller3.cpp)
+add_executable(turtlesim_service src/turtlesim_service.cpp)
 ament_target_dependencies(turtlesim_controller rclcpp turtlesim geometry_msgs turtlesim_custom_msgs)
-#ament_target_dependencies(turtlesim_controller2 rclcpp turtlesim geometry_msgs turtlesim_custom_msgs)
-#ament_target_dependencies(turtlesim_controller3 rclcpp turtlesim geometry_msgs turtlesim_custom_msgs)
-#ament_target_dependencies(turtlesim_service rclcpp turtlesim_custom_msgs)
+ament_target_dependencies(turtlesim_controller2 rclcpp turtlesim geometry_msgs turtlesim_custom_msgs)
+ament_target_dependencies(turtlesim_controller3 rclcpp turtlesim geometry_msgs turtlesim_custom_msgs)
+ament_target_dependencies(turtlesim_service rclcpp turtlesim_custom_msgs)
 
 install(TARGETS
   turtlesim_controller
-#  turtlesim_controller2
-#  turtlesim_controller3
-#  turtlesim_service
+  turtlesim_controller2
+  turtlesim_controller3
+  turtlesim_service
   DESTINATION lib/${PROJECT_NAME}
 )
 
+install(
+  DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
+)
 
 # uncomment the following section in order to fill in
 # further dependencies manually.
