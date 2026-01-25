@@ -11,20 +11,24 @@ TurtlesimController(): Node("turtlesim_controller")
  {
  subscription_ = this->create_subscription<turtlesim::msg::Pose>("turtle1/pose", 10, std::bind(&TurtlesimController::topic_callback, this, _1));
  publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle1/cmd_vel", 10);
- timer_ = this->create_wall_timer(std::chrono::milliseconds(50), std::bind(&TurtlesimController::timer_callback, this));
+ timer_ = this->create_wall_timer(std::chrono::milliseconds(5), std::bind(&TurtlesimController::timer_callback, this));
  }
 
 private:
 
 void timer_callback()
  {
-    if(x_<9.0){
-    message.linear.x = 2.0;
+    if(x_<9.0 and x_>2.0){
+    message.linear.x = 1.0;
     message.angular.z = 0.0;
     }
-    else{
-    message.linear.x = 0.0;
-    message.angular.z = 0.0;
+    else if (x_>=9.0){
+    message.linear.x = 1.0;
+    message.angular.z = 1.0;
+    }
+    else if (x_<=2.0){
+    message.linear.x = 1.0;
+    message.angular.z = -1.0;
     }
     publisher_->publish(message);
  }
