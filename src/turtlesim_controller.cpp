@@ -1,7 +1,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include "turtlesim/msg/pose.hpp"
 #include "geometry_msgs/msg/twist.hpp"
-#include "turtlesim_custom_msgs/msg/vel.hpp"
 
 using std::placeholders::_1;
 
@@ -12,7 +11,6 @@ TurtlesimController(): Node("turtlesim_controller")
  {
  subscription_ = this->create_subscription<turtlesim::msg::Pose>("turtle1/pose", 10, std::bind(&TurtlesimController::topic_callback, this, _1));
  publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("turtle1/cmd_vel", 10);
- publisher_vel_ = this->create_publisher<turtlesim_custom_msgs::msg::Vel>("vel_topic", 10);
  timer_ = this->create_wall_timer(std::chrono::milliseconds(50), std::bind(&TurtlesimController::timer_callback, this));
  }
 
@@ -28,10 +26,7 @@ void timer_callback()
     message.linear.x = 0.0;
     message.angular.z = 0.0;
     }
-      message_vel.name = "linear_x";
-      message_vel.vel = message.linear.x;
-      publisher_vel_->publish(message_vel);
-      publisher_->publish(message);
+    publisher_->publish(message);
  }
 
  void topic_callback(const turtlesim::msg::Pose::SharedPtr msg)
@@ -45,8 +40,6 @@ void timer_callback()
  rclcpp::TimerBase::SharedPtr timer_;
  geometry_msgs::msg::Twist message;
  float x_;
- rclcpp::Publisher<turtlesim_custom_msgs::msg::Vel>::SharedPtr publisher_vel_;
- turtlesim_custom_msgs::msg::Vel message_vel;
 };
 
 int main(int argc, char * argv[])
