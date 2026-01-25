@@ -45,7 +45,8 @@ void timer_callback()
 int main(int argc, char * argv[])
 {
  rclcpp::init(argc, argv);
- rclcpp::spin(std::make_shared<TurtlesimController>());
+ auto node = std::make_shared<TurtlesimController>();
+ rclcpp::spin(node);
  rclcpp::shutdown();
  return 0;
 }
